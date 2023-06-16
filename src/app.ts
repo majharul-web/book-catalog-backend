@@ -2,6 +2,7 @@ import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import httpStatus from 'http-status';
+import routes from './app/routes';
 
 const app: Application = express();
 
@@ -11,6 +12,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Routes
+app.use('/api/v1/', routes);
 
 // test error
 app.get('/', async (req: Request, res: Response) => {
