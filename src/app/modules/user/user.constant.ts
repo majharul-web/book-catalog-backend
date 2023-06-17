@@ -6,8 +6,6 @@ export const userSearchableFields = [
   'name.lastName',
   'address',
   'role',
-  'budget',
-  'income',
 ];
 
 export const userFilterableFields = [
@@ -15,6 +13,4 @@ export const userFilterableFields = [
   'phoneNumber',
   'address',
   'role',
-  'budget',
-  'income',
 ];

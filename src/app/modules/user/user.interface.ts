@@ -11,8 +11,8 @@ export type IUser = {
   name: UserName; //embedded object
   phoneNumber: string;
   address: string;
-  budget: string;
-  income?: string;
+  budget: number;
+  income: number;
 };
 export type UserModel = Model<IUser, Record<string, unknown>>;
 
@@ -21,6 +21,4 @@ export type IUserFilters = {
   phoneNumber?: string;
   address?: string;
   role?: string;
-  budget?: string;
-  income?: string;
 };

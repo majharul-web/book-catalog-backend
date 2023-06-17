@@ -9,11 +9,11 @@ const cowSchema = new Schema<ICow>(
       required: true,
     },
     age: {
-      type: String,
+      type: Number,
       required: true,
     },
     price: {
-      type: String,
+      type: Number,
       required: true,
     },
     location: {
@@ -27,7 +27,7 @@ const cowSchema = new Schema<ICow>(
       enum: cowBreed,
     },
     weight: {
-      type: String,
+      type: Number,
       required: true,
     },
     label: {

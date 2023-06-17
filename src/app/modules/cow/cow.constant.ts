@@ -22,12 +22,11 @@ const DualPurpose = 'Dual Purpose';
 export const cowCategory = ['Dairy', 'Beef', DualPurpose];
 export const cowLabel = ['for sale', 'sold out'];
 
-export const cowSearchableFields = [
+export const cowSearchableFields = ['location', 'breed', 'category'];
+
+export const cowFilterableFields = [
+  'searchTerm',
   'location',
   'breed',
   'category',
-  'weight',
-  'age',
 ];
-
-export const cowFilterableFields = ['searchTerm', 'location', 'breed'];

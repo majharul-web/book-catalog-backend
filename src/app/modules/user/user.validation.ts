@@ -24,10 +24,10 @@ const createUserZodSchema = z.object({
       required_error: 'Address is required',
     }),
 
-    budget: z.string({
+    budget: z.number({
       required_error: 'Budget is required',
     }),
-    income: z.string().optional(),
+    income: z.number().optional(),
   }),
 });
 
@@ -41,8 +41,8 @@ const updateUserZodSchema = z.object({
     phoneNumber: z.string().optional(),
     role: z.enum([...userRole] as [string, ...string[]]).optional(),
     address: z.string().optional(),
-    budget: z.string().optional(),
-    income: z.string().optional(),
+    budget: z.number().optional(),
+    income: z.number().optional(),
   }),
 });
 
