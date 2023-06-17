@@ -6,6 +6,7 @@ export type UserName = {
 };
 
 export type IUser = {
+  _id?: string;
   role: string;
   password: string;
   name: UserName; //embedded object

@@ -3,7 +3,7 @@ import { ICow } from '../cow/cow.interface';
 import { IUser } from '../user/user.interface';
 
 export type IOrder = {
-  id: string;
+  id?: string;
   cow: Types.ObjectId | ICow;
   buyer: Types.ObjectId | IUser;
 };
