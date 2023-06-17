@@ -14,13 +14,9 @@ app.use(express.json());
 // Routes
 app.use('/api/v1/', routes);
 
-// test error
+// Home route
 app.get('/', async (req: Request, res: Response) => {
-  res.send('Hello world');
-  // Promise.reject(new Error('Unhandled promise rejection'));
-  // throw new ApiError(400, 'Something went wrong');
-  // next('something went wrong');
-  // throw new Error('Something went wrong');
+  res.send('Welcome to Digital Cow Hut');
 });
 
 // Error handler
