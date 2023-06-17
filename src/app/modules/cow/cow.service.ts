@@ -12,7 +12,7 @@ const getAllCows = async (
   filters: ICowFilters,
   paginationOptions: IPaginationOptions
 ): Promise<IGenericResponse<ICow[]>> => {
-  const { searchTerm, ...filtersData } = filters;
+  const { searchTerm, minPrice, maxPrice, ...filtersData } = filters;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(paginationOptions);
 
@@ -27,6 +27,14 @@ const getAllCows = async (
         },
       })),
     });
+  }
+
+  if (minPrice) {
+    andConditions.push({ price: { $gte: minPrice } });
+  }
+
+  if (maxPrice) {
+    andConditions.push({ price: { $lte: maxPrice } });
   }
 
   if (Object.keys(filtersData).length) {
