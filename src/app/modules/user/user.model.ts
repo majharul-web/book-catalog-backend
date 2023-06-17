@@ -41,7 +41,6 @@ const userSchema = new Schema<IUser>(
     },
     income: {
       type: String,
-      required: true,
       default: 0,
     },
   },
