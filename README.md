@@ -12,7 +12,7 @@ The main focus of this Project is to implement error handling, CRUD operations, 
 - Used Express.js as the web framework.
 - Used Mongoose as the Object Data Modeling (ODM) and validation library for MongoDB.
 
-### Live Link: https://digital-cow-7umihauy1-majharul-web.vercel.app/
+### Live Link: https://digital-cow-hut-seven.vercel.app/
 
 ### Application Routes:
 
