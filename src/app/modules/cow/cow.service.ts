@@ -40,7 +40,7 @@ const getAllCows = async (
   if (Object.keys(filtersData).length) {
     andConditions.push({
       $and: Object.entries(filtersData).map(([field, value]) => ({
-        [field]: value,
+        [field]: { $regex: new RegExp(value, 'i') },
       })),
     });
   }
@@ -96,19 +96,7 @@ const updateCow = async (
     throw new ApiError(httpStatus.NOT_FOUND, 'Cow not found !');
   }
 
-  const { name, ...cowData } = payload;
-
-  const updatedCowData: Partial<ICow> = { ...cowData };
-  // dynamically handling
-
-  if (name && Object.keys(name).length > 0) {
-    Object.keys(name).forEach(key => {
-      const nameKey = `name.${key}` as keyof Partial<ICow>; // `name.fisrtName`
-      (updatedCowData as any)[nameKey] = name[key as keyof typeof name];
-    });
-  }
-
-  const result = await Cow.findOneAndUpdate({ _id: id }, updatedCowData, {
+  const result = await Cow.findOneAndUpdate({ _id: id }, payload, {
     new: true,
   });
   return result;
