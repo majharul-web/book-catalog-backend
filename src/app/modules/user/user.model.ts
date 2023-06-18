@@ -1,6 +1,8 @@
 import { Schema, model } from 'mongoose';
 import { IUser, UserModel } from './user.interface';
 import { userRole } from './user.constant';
+import ApiError from '../../../errors/ApiError';
+import httpStatus from 'http-status';
 
 const userSchema = new Schema<IUser>(
   {
@@ -29,7 +31,6 @@ const userSchema = new Schema<IUser>(
     phoneNumber: {
       type: String,
       required: true,
-      unique: true,
     },
     address: {
       type: String,
@@ -51,4 +52,15 @@ const userSchema = new Schema<IUser>(
     },
   }
 );
+
+userSchema.pre('save', async function (next) {
+  const isExist = await User.findOne({
+    phoneNumber: this.phoneNumber,
+  });
+  if (isExist) {
+    throw new ApiError(httpStatus.CONFLICT, 'Phone number already exist');
+  }
+  next();
+});
+
 export const User = model<IUser, UserModel>('User', userSchema);
