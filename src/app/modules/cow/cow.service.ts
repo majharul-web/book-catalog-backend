@@ -7,6 +7,7 @@ import { cowSearchableFields } from './cow.constant';
 import { SortOrder } from 'mongoose';
 import { Cow } from './cow.model';
 import ApiError from '../../../errors/ApiError';
+import { User } from '../user/user.model';
 
 const getAllCows = async (
   filters: ICowFilters,
@@ -72,7 +73,40 @@ const getAllCows = async (
 };
 
 const createCow = async (cow: ICow): Promise<ICow | null> => {
-  const result = (await Cow.create(cow)).populate('seller');
+  const { seller } = cow;
+
+  // Check if the seller is exist or not
+  const sellerAccount = await User.findById(seller);
+
+  if (!sellerAccount) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid seller ID.');
+  }
+  if (sellerAccount.role !== 'seller') {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'You arr not a seller , Only seller can not add a cow !'
+    );
+  }
+  const existingCow = await Cow.findOne({
+    name: cow.name,
+    age: cow.age,
+    price: cow.price,
+    location: cow.location,
+    breed: cow.breed,
+    weight: cow.weight,
+    label: 'for sale',
+    category: cow.category,
+    seller: seller,
+  });
+
+  if (existingCow) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'This cow already exists with the same seller.'
+    );
+  }
+
+  const result = await Cow.create(cow);
   return result;
 };
 
