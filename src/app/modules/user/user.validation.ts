@@ -14,9 +14,13 @@ const createUserZodSchema = z.object({
         required_error: 'Last name is required',
       }),
     }),
-    phoneNumber: z.string({
-      required_error: 'Contact number is required',
-    }),
+    phoneNumber: z
+      .string({
+        required_error: 'Contact number is required',
+      })
+      .refine(value => /^(?:\+?88)?01[13-9]\d{8}$/.test(value), {
+        message: 'Invalid Bangladeshi phone number',
+      }),
     role: z.enum([...userRole] as [string, ...string[]], {
       required_error: 'Role is required',
     }),
@@ -34,11 +38,21 @@ const createUserZodSchema = z.object({
 const updateUserZodSchema = z.object({
   body: z.object({
     password: z.string().optional(),
-    name: z.object({
-      firstName: z.string().optional(),
-      lastName: z.string().optional(),
-    }),
-    phoneNumber: z.string().optional(),
+    name: z
+      .object({
+        firstName: z.string().optional(),
+        lastName: z.string().optional(),
+      })
+      .optional(),
+    phoneNumber: z
+      .string()
+      .optional()
+      .refine(
+        value => value === undefined || /^(?:\+?88)?01[13-9]\d{8}$/.test(value),
+        {
+          message: 'Invalid Bangladeshi phone number',
+        }
+      ),
     role: z.enum([...userRole] as [string, ...string[]]).optional(),
     address: z.string().optional(),
     budget: z.number().optional(),
