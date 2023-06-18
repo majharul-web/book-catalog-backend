@@ -11,96 +11,7 @@ import httpStatus from 'http-status';
 import { Cow } from '../cow/cow.model';
 import { User } from '../user/user.model';
 
-// const createOrder = async (orderData: IOrder): Promise<IOrder | null> => {
-//   const { cow, buyer } = orderData;
-
-//   // Check if the buyer has enough money to buy the cow
-//   const buyerAccount = await User.findById(buyer);
-//   const cowDetails = await Cow.findById(cow).populate('seller');
-
-//   if (!buyerAccount || !cowDetails) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid buyer or cow ID.');
-//   }
-
-//   if (buyerAccount.budget < cowDetails.price) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'Not enough money.');
-//   }
-
-//   let newOrderAllData = null;
-//   const session = await mongoose.startSession();
-//   try {
-//     session.startTransaction();
-//     orderData.id = await generateOrderId();
-
-//     // Change the cow's label from 'for sale' to 'sold out'.
-//     const updatedCow = await Cow.findOneAndUpdate(
-//       { _id: cow },
-//       { label: 'sold out' },
-//       { new: true }
-//     );
-
-//     if (!updatedCow.length) {
-//       throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to update cow label');
-//     }
-
-//     // Deduct the cost of the cow from the buyer's budget
-//     const updatedBudget = buyerAccount.budget - cowDetails.price;
-//     const updatedBuyer = await User.findOneAndUpdate(
-//       { _id: orderData.buyer },
-//       { budget: updatedBudget },
-//       { new: true }
-//     );
-//     if (!updatedBuyer.length) {
-//       throw new ApiError(
-//         httpStatus.BAD_REQUEST,
-//         'Failed to update buyer budget'
-//       );
-//     }
-
-//     // Put the same amount of cost into the seller's income
-//     const updatedIncome = cowDetails.seller.income + cowDetails.price;
-//     const updatedSeller = await User.findOneAndUpdate(
-//       { _id: cowDetails.seller._id },
-//       { income: updatedIncome },
-//       { new: true }
-//     );
-//     if (!updatedSeller.length) {
-//       throw new ApiError(
-//         httpStatus.BAD_REQUEST,
-//         'Failed to update seller income'
-//       );
-//     }
-
-//     // create order
-//     const newOrder = await Order.create(orderData, { session });
-
-//     if (!newOrder.length) {
-//       throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create order');
-//     }
-//     newOrderAllData = newOrder[0];
-
-//     await session.commitTransaction();
-//     await session.endSession();
-//   } catch (error) {
-//     await session.abortTransaction();
-//     await session.endSession();
-//     throw error;
-//   }
-
-//   if (newOrderAllData) {
-//     newOrderAllData = await Order.findOne({ id: newOrderAllData.id })
-//       .populate({
-//         path: 'cow',
-//         populate: {
-//           path: 'seller',
-//         },
-//       })
-//       .populate('buyer');
-//   }
-
-//   return newOrderAllData;
-// };
-const createOrder = async (orderData: IOrder): Promise<IOrder | null> => {
+const createOrderOld = async (orderData: IOrder): Promise<IOrder | null> => {
   const { cow, buyer } = orderData;
 
   // Check if the buyer has enough money to buy the cow
@@ -110,9 +21,18 @@ const createOrder = async (orderData: IOrder): Promise<IOrder | null> => {
   if (!buyerAccount || !cowDetails) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid buyer or cow ID.');
   }
+  if (buyerAccount.role !== 'buyer') {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'You arr not a buyer ,Only buyers can order cow .'
+    );
+  }
 
   if (buyerAccount.budget < cowDetails.price) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Not enough money.');
+  }
+  if (cowDetails.label === 'sold out') {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Cow is already sold out.');
   }
 
   let allOderData;
@@ -174,6 +94,118 @@ const createOrder = async (orderData: IOrder): Promise<IOrder | null> => {
   return allOderData;
 };
 
+const createOrder = async (orderData: IOrder): Promise<IOrder | null> => {
+  const { cow, buyer } = orderData;
+
+  // Check if the buyer has enough money to buy the cow
+  const buyerAccount = await User.findById(buyer);
+  const cowDetails = await Cow.findById(cow).populate('seller');
+
+  if (!buyerAccount || !cowDetails) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid buyer or cow ID.');
+  }
+  if (buyerAccount.role !== 'buyer') {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'You arr not a buyer ,Only buyers can order cow .'
+    );
+  }
+
+  if (buyerAccount.budget < cowDetails.price) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Not enough money.');
+  }
+  if (cowDetails.label === 'sold out') {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Cow is already sold out.');
+  }
+
+  let allOrderData;
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    // Update cow's status to 'sold out'
+    const updatedCow = await Cow.findOneAndUpdate(
+      { _id: cow },
+      { $set: { label: 'sold out' } },
+      { session }
+    );
+
+    if (!updatedCow) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to update cow label');
+    }
+
+    // Deduct the cost of the cow from the buyer's budget
+    const updatedBuyer = await User.findOneAndUpdate(
+      { _id: buyer },
+      { $inc: { budget: -cowDetails.price } },
+      { session }
+    );
+    if (!updatedBuyer) {
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        'Failed to update buyer budget'
+      );
+    }
+
+    const sellerAccount = await User.findOneAndUpdate(
+      { _id: cowDetails.seller._id },
+      { $inc: { income: cowDetails.price } },
+      { new: true, session }
+    );
+
+    if (!sellerAccount) {
+      session.abortTransaction();
+      session.endSession();
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Seller not found');
+    }
+
+    const id = await generateOrderId();
+
+    // Create a new order entry
+    // const order = new Order({
+    //   id,
+    //   cow,
+    //   buyer,
+    // });
+    // await order.save({ session });
+
+    const newOrder = {
+      id,
+      cow,
+      buyer,
+    };
+    const order = await Order.create([newOrder], { session });
+
+    if (!order.length) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create order');
+    }
+
+    allOrderData = order[0];
+
+    // Commit the transaction
+    await session.commitTransaction();
+    await session.endSession();
+  } catch (error) {
+    // If any error occurs, abort the transaction
+    await session.abortTransaction();
+    await session.endSession();
+    throw error;
+  }
+
+  if (allOrderData) {
+    allOrderData = await Order.findOne({ id: allOrderData.id })
+      .populate({
+        path: 'cow',
+        populate: {
+          path: 'seller',
+        },
+      })
+      .populate('buyer');
+  }
+  return allOrderData;
+};
+
 const getAllCows = async (
   filters: IOrderFilters,
   paginationOptions: IPaginationOptions
@@ -233,4 +265,5 @@ const getAllCows = async (
 export const OrderService = {
   createOrder,
   getAllCows,
+  createOrderOld,
 };
