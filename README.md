@@ -20,17 +20,17 @@ The main focus of this Project is to implement error handling, CRUD operations, 
 
 - api/v1/auth/signup (POST)
 - api/v1/users (GET)
-- api/v1/users/6177a5b87d32123f08d2f5d4 (Single GET) Include an id that is saved in your database
-- api/v1/users/6177a5b87d32123f08d2f5d4 (PATCH)
-- api/v1/users/6177a5b87d32123f08d2f5d4 (DELETE) Include an id that is saved in your database
+- api/v1/users/648dc7df49be1ec53f9dc4d2 (Single GET)
+- api/v1/users/648dc7df49be1ec53f9dc4d2 (PATCH)
+- api/v1/users/648dc7df49be1ec53f9dc4d2 (DELETE)
 
 #### Cows
 
 - api/v1/cows (POST)
 - api/v1/cows (GET)
-- api/v1/cows/6177a5b87d32123f08d2f5d4 (Single GET) Include an id that is saved in your database
-- api/v1/cows/6177a5b87d32123f08d2f5d4 (PATCH)
-- api/v1/cows/6177a5b87d32123f08d2f5d4 (DELETE) Include an id that is saved in your database
+- api/v1/cows/648d3f6e593570f77f75cc70 (Single GET)
+- api/v1/cows/648d3f6e593570f77f75cc70 (PATCH)
+- api/v1/cows/648d3f6e593570f77f75cc70 (DELETE)
 
 ### Pagination and Filtering routes of Cows
 
