@@ -1,17 +1,41 @@
+/* eslint-disable no-unused-vars */
 import { Model } from 'mongoose';
 
-export type UserName = {
+export type AdminName = {
   firstName: string;
   lastName: string;
-  middleName: string;
 };
 
 export type IAdmin = {
-  name: UserName; //embedded object
+  name: AdminName; //embedded object
   phoneNumber: string;
   role: string;
   password: string;
   address: string;
 };
 
-export type AdminModel = Model<IAdmin, Record<string, unknown>>;
+// export type AdminModel = Model<IAdmin, Record<string, unknown>>;
+
+export type AdminModel = {
+  isAdminExist: (
+    id: string
+  ) => Promise<Pick<IAdmin, 'phoneNumber' | 'password' | 'role'>>;
+  isPasswordMatched: (
+    givenPassword: string,
+    savePassword: string
+  ) => Promise<boolean>;
+} & Model<IAdmin>;
+
+export type ILoginAdmin = {
+  phoneNumber: string;
+  password: string;
+};
+
+export type ILoginAdminResponse = {
+  accessToken: string;
+  refreshToken?: string;
+};
+
+export type IRefreshTokenResponse = {
+  accessToken: string;
+};
