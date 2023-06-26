@@ -50,7 +50,7 @@ export const AdminSchema = new Schema<IAdmin, AdminModel>(
 // create static method
 AdminSchema.statics.isAdminExist = async function (
   phoneNumber: string
-): Promise<Pick<IAdmin, 'phoneNumber' | 'password' | 'role'> | null> {
+): Promise<Pick<IAdmin, 'phoneNumber' | '_id' | 'password' | 'role'> | null> {
   return await Admin.findOne(
     { phoneNumber: phoneNumber },
     {
@@ -78,4 +78,5 @@ AdminSchema.pre('save', async function (next) {
   );
   next();
 });
+
 export const Admin = model<IAdmin, AdminModel>('Admin', AdminSchema);

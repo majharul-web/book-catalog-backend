@@ -8,11 +8,6 @@ import { userSearchableFields } from './user.constant';
 import { paginationHelper } from '../../../helpers/paginationHelper';
 import { SortOrder } from 'mongoose';
 
-const createUser = async (user: IUser): Promise<IUser | null> => {
-  const result = await User.create(user);
-  return result;
-};
-
 const getAllUsers = async (
   filters: IUserFilters,
   paginationOptions: IPaginationOptions
@@ -106,7 +101,6 @@ const updateUser = async (
 };
 
 export const UserService = {
-  createUser,
   getSingleUser,
   deleteSingleUser,
   updateUser,

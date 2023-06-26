@@ -10,7 +10,7 @@ const createAdmin = catchAsync(async (req: Request, res: Response) => {
   const adminData = req.body;
   const result = await AdminService.createAdmin(adminData);
 
-  sendResponse<IAdmin>(res, {
+  sendResponse<Partial<IAdmin>>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'admin created successfully!',

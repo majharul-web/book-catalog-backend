@@ -41,7 +41,7 @@ const adminLogin = async (
 
   // create access token
   const accessToken = jwtHelper.createToken(
-    { phoneNumber: isAdminExist.phoneNumber, role: isAdminExist.role },
+    { _id: isAdminExist._id, role: isAdminExist.role },
     config.jwt.secret as Secret,
     {
       expiresIn: config.jwt.access_expires_in,
@@ -49,7 +49,7 @@ const adminLogin = async (
   );
   // create refresh token
   const refreshToken = jwtHelper.createToken(
-    { phoneNumber: isAdminExist.phoneNumber, role: isAdminExist.role },
+    { _id: isAdminExist._id, role: isAdminExist.role },
     config.jwt.refresh_secret as Secret,
     {
       expiresIn: config.jwt.refresh_expires_in,

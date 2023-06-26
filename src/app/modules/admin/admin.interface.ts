@@ -7,6 +7,7 @@ export type AdminName = {
 };
 
 export type IAdmin = {
+  _id?: string;
   name: AdminName; //embedded object
   phoneNumber: string;
   role: string;
@@ -19,7 +20,7 @@ export type IAdmin = {
 export type AdminModel = {
   isAdminExist: (
     id: string
-  ) => Promise<Pick<IAdmin, 'phoneNumber' | 'password' | 'role'>>;
+  ) => Promise<Pick<IAdmin, 'phoneNumber' | '_id' | 'password' | 'role'>>;
   isPasswordMatched: (
     givenPassword: string,
     savePassword: string
