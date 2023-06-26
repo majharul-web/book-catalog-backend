@@ -3,6 +3,8 @@ import { Schema, model } from 'mongoose';
 import { IAdmin, AdminModel } from './admin.interface';
 import config from '../../../config';
 import bcrypt from 'bcrypt';
+import ApiError from '../../../errors/ApiError';
+import httpStatus from 'http-status';
 
 export const AdminSchema = new Schema<IAdmin, AdminModel>(
   {
@@ -68,6 +70,16 @@ AdminSchema.statics.isPasswordMatched = async function (
 ): Promise<boolean> {
   return await bcrypt.compare(givenPassword, savePassword);
 };
+
+AdminSchema.pre('save', async function (next) {
+  const isExist = await Admin.findOne({
+    phoneNumber: this.phoneNumber,
+  });
+  if (isExist) {
+    throw new ApiError(httpStatus.CONFLICT, 'Phone number already exist');
+  }
+  next();
+});
 
 // hash password
 AdminSchema.pre('save', async function (next) {

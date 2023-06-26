@@ -1,10 +1,11 @@
 import { Secret } from 'jsonwebtoken';
 import config from '../../../config';
-import { IAdmin, ILoginAdmin, ILoginAdminResponse } from './admin.interface';
+import { IAdmin } from './admin.interface';
 import { Admin } from './admin.model';
 import ApiError from '../../../errors/ApiError';
 import httpStatus from 'http-status';
 import { jwtHelper } from '../../../helpers/jwtHelper';
+import { ILogin, ILoginResponse } from '../../../interfaces/auth';
 
 const createAdmin = async (
   payload: IAdmin
@@ -19,9 +20,7 @@ const createAdmin = async (
   return null;
 };
 
-const adminLogin = async (
-  payload: ILoginAdmin
-): Promise<ILoginAdminResponse> => {
+const adminLogin = async (payload: ILogin): Promise<ILoginResponse> => {
   const { phoneNumber, password } = payload;
 
   // check Admin is exist

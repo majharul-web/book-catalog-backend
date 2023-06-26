@@ -19,24 +19,10 @@ export type IAdmin = {
 
 export type AdminModel = {
   isAdminExist: (
-    id: string
+    phoneNumber: string
   ) => Promise<Pick<IAdmin, 'phoneNumber' | '_id' | 'password' | 'role'>>;
   isPasswordMatched: (
     givenPassword: string,
     savePassword: string
   ) => Promise<boolean>;
 } & Model<IAdmin>;
-
-export type ILoginAdmin = {
-  phoneNumber: string;
-  password: string;
-};
-
-export type ILoginAdminResponse = {
-  accessToken: string;
-  refreshToken?: string;
-};
-
-export type IRefreshTokenResponse = {
-  accessToken: string;
-};
