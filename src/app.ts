@@ -3,6 +3,7 @@ import cors from 'cors';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import httpStatus from 'http-status';
 import routes from './app/routes';
+import cookieParser from 'cookie-parser';
 
 const app: Application = express();
 
@@ -10,6 +11,8 @@ const app: Application = express();
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+app.use(cookieParser());
 
 // Routes
 app.use('/api/v1/', routes);

@@ -60,10 +60,10 @@ const userSchema = new Schema<IUser>(
 
 // create static method
 userSchema.statics.isUserExist = async function (
-  phoneNumber: string
+  _id: string
 ): Promise<Pick<IUser, 'phoneNumber' | '_id' | 'password' | 'role'> | null> {
   return await User.findOne(
-    { phoneNumber: phoneNumber },
+    { _id: _id },
     {
       phoneNumber: 1,
       password: 1,
