@@ -59,7 +59,19 @@ const userSchema = new Schema<IUser>(
 );
 
 // create static method
-userSchema.statics.isUserExist = async function (
+userSchema.statics.isUserExistByPhone = async function (
+  phoneNumber: string
+): Promise<Pick<IUser, 'phoneNumber' | '_id' | 'password' | 'role'> | null> {
+  return await User.findOne(
+    { phoneNumber: phoneNumber },
+    {
+      phoneNumber: 1,
+      password: 1,
+      role: 1,
+    }
+  );
+};
+userSchema.statics.isUserExistById = async function (
   _id: string
 ): Promise<Pick<IUser, 'phoneNumber' | '_id' | 'password' | 'role'> | null> {
   return await User.findOne(

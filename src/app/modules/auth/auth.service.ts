@@ -24,7 +24,7 @@ const userLogin = async (payload: ILogin): Promise<ILoginResponse> => {
   const { phoneNumber, password } = payload;
 
   // check User is exist
-  const isUserExist = await User.isUserExist(phoneNumber);
+  const isUserExist = await User.isUserExistByPhone(phoneNumber);
 
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
@@ -73,7 +73,7 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
 
   const { _id } = verifiedToken;
 
-  const isUserExist = await User.isUserExist(_id);
+  const isUserExist = await User.isUserExistById(_id);
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
