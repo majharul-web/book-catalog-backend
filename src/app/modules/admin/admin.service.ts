@@ -6,6 +6,7 @@ import ApiError from '../../../errors/ApiError';
 import httpStatus from 'http-status';
 import { jwtHelper } from '../../../helpers/jwtHelper';
 import { ILogin, ILoginResponse } from '../../../interfaces/auth';
+import bcrypt from 'bcrypt';
 
 const createAdmin = async (
   payload: IAdmin
@@ -61,7 +62,49 @@ const adminLogin = async (payload: ILogin): Promise<ILoginResponse> => {
   };
 };
 
+const updateProfile = async (
+  id: string,
+  payload: Partial<IAdmin>
+): Promise<IAdmin | null> => {
+  const isExist = await Admin.findOne({ _id: id });
+
+  if (!isExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Admin not found !');
+  }
+
+  const { name, ...userData } = payload;
+
+  const updatedAdminData: Partial<IAdmin> = { ...userData };
+  // dynamically handling
+
+  if (userData.password) {
+    updatedAdminData.password = await bcrypt.hash(
+      userData.password,
+      Number(config.bycrypt_salt_rounds)
+    );
+  }
+
+  if (name && Object.keys(name).length > 0) {
+    Object.keys(name).forEach(key => {
+      const nameKey = `name.${key}` as keyof Partial<IAdmin>; // `name.fisrtName`
+      (updatedAdminData as any)[nameKey] = name[key as keyof typeof name];
+    });
+  }
+
+  const result = await Admin.findOneAndUpdate({ _id: id }, updatedAdminData, {
+    new: true,
+  });
+  return result;
+};
+
+const getSingleAdmin = async (id: string): Promise<IAdmin | null> => {
+  const result = await Admin.findOne({ _id: id });
+  return result;
+};
+
 export const AdminService = {
   createAdmin,
   adminLogin,
+  updateProfile,
+  getSingleAdmin,
 };

@@ -22,10 +22,12 @@ const createAdminZodSchema = z.object({
 });
 const updateAdminZodSchema = z.object({
   body: z.object({
-    name: z.object({
-      firstName: z.string().optional(),
-      lastName: z.string().optional(),
-    }),
+    name: z
+      .object({
+        firstName: z.string().optional(),
+        lastName: z.string().optional(),
+      })
+      .optional(),
     password: z.string().optional(),
     role: z.enum(['admin']).optional(),
     address: z.string().optional(),

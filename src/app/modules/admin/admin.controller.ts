@@ -6,6 +6,9 @@ import { AdminService } from './admin.service';
 import { IAdmin } from './admin.interface';
 import config from '../../../config';
 import { ILoginResponse } from '../../../interfaces/auth';
+import { Secret } from 'jsonwebtoken';
+import { jwtHelper } from '../../../helpers/jwtHelper';
+import ApiError from '../../../errors/ApiError';
 
 const createAdmin = catchAsync(async (req: Request, res: Response) => {
   const adminData = req.body;
@@ -39,7 +42,57 @@ const adminLogin = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// profile section
+const getMyProfile = catchAsync(async (req: Request, res: Response) => {
+  const token = req.headers.authorization;
+  if (!token) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+  }
+  // verify token
+
+  // eslint-disable-next-line no-unused-vars
+  const { role, _id } = jwtHelper.verifyToken(
+    token,
+    config.jwt.secret as Secret
+  );
+
+  const result = await AdminService.getSingleAdmin(_id);
+
+  sendResponse<IAdmin>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Admin information retrieved successfully',
+    data: result,
+  });
+});
+
+const updateProfile = catchAsync(async (req: Request, res: Response) => {
+  const userData = req.body;
+  const token = req.headers.authorization;
+  if (!token) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+  }
+  // verify token
+
+  // eslint-disable-next-line no-unused-vars
+  const { role, _id } = jwtHelper.verifyToken(
+    token,
+    config.jwt.secret as Secret
+  );
+
+  const result = await AdminService.updateProfile(_id, userData);
+
+  sendResponse<IAdmin>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Admin information updated successfully',
+    data: result,
+  });
+});
+
 export const AdminController = {
   createAdmin,
   adminLogin,
+  getMyProfile,
+  updateProfile,
 };
