@@ -7,6 +7,8 @@ import { IGenericResponse } from '../../../interfaces/common';
 import { userSearchableFields } from './user.constant';
 import { paginationHelper } from '../../../helpers/paginationHelper';
 import { SortOrder } from 'mongoose';
+import config from '../../../config';
+import bcrypt from 'bcrypt';
 
 const getAllUsers = async (
   filters: IUserFilters,
@@ -100,9 +102,45 @@ const updateUser = async (
   return result;
 };
 
+const updateProfile = async (
+  id: string,
+  payload: Partial<IUser>
+): Promise<IUser | null> => {
+  const isExist = await User.findOne({ _id: id });
+
+  if (!isExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found !');
+  }
+
+  const { name, ...userData } = payload;
+
+  const updatedUserData: Partial<IUser> = { ...userData };
+  // dynamically handling
+
+  if (userData.password) {
+    updatedUserData.password = await bcrypt.hash(
+      userData.password,
+      Number(config.bycrypt_salt_rounds)
+    );
+  }
+
+  if (name && Object.keys(name).length > 0) {
+    Object.keys(name).forEach(key => {
+      const nameKey = `name.${key}` as keyof Partial<IUser>; // `name.fisrtName`
+      (updatedUserData as any)[nameKey] = name[key as keyof typeof name];
+    });
+  }
+
+  const result = await User.findOneAndUpdate({ _id: id }, updatedUserData, {
+    new: true,
+  });
+  return result;
+};
+
 export const UserService = {
   getSingleUser,
   deleteSingleUser,
   updateUser,
   getAllUsers,
+  updateProfile,
 };

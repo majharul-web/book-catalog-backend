@@ -20,6 +20,7 @@ const signUp = async (user: IUser): Promise<Partial<IUser> | null> => {
   }
   return null;
 };
+
 const userLogin = async (payload: ILogin): Promise<ILoginResponse> => {
   const { phoneNumber, password } = payload;
 
