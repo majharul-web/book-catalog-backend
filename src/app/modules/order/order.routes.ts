@@ -4,6 +4,7 @@ import validateRequest from '../../middlewares/validateRequest';
 import { OrderValidation } from './order.validation';
 import auth from '../../middlewares/auth';
 import { ENUM_USER_ROLE } from '../../../enums/user';
+import checkOrderAuthorization from '../../middlewares/checkOrderAuthorization';
 
 const router = express.Router();
 
@@ -16,13 +17,14 @@ router.post(
 router.get(
   '/:id',
   auth(ENUM_USER_ROLE.BUYER, ENUM_USER_ROLE.SELLER, ENUM_USER_ROLE.ADMIN),
+  checkOrderAuthorization,
   OrderController.getSingleOrder
 );
 router.get(
   '/',
   auth(ENUM_USER_ROLE.BUYER, ENUM_USER_ROLE.SELLER, ENUM_USER_ROLE.ADMIN),
-
-  OrderController.getOrders
+  checkOrderAuthorization,
+  OrderController.getAllOrders
 );
 
 export const OrderRoutes = router;

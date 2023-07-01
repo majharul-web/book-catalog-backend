@@ -206,7 +206,7 @@ const createOrder = async (orderData: IOrder): Promise<IOrder | null> => {
   return allOrderData;
 };
 
-const getAllCows = async (
+const getAllOrders = async (
   filters: IOrderFilters,
   paginationOptions: IPaginationOptions
 ): Promise<IGenericResponse<IOrder[]>> => {
@@ -271,7 +271,7 @@ const getSingleOrder = async (id: string): Promise<IOrder | null> => {
 
 export const OrderService = {
   createOrder,
-  getAllCows,
+  getAllOrders,
   getSingleOrder,
   createOrderOld,
 };

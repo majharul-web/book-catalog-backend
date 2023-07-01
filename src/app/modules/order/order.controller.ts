@@ -20,7 +20,7 @@ const createOrder = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getOrders = catchAsync(async (req: Request, res: Response) => {
+const getAllOrders = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, orderFilterableFields);
   const paginationOptions = pick(req.query, paginationField);
   const result = await OrderService.getAllOrders(filters, paginationOptions);
@@ -41,13 +41,13 @@ const getSingleOrder = catchAsync(async (req: Request, res: Response) => {
   sendResponse<IOrder>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'cow retrieved successfully!',
+    message: 'order retrieved successfully!',
     data: result,
   });
 });
 
 export const OrderController = {
   createOrder,
-  getOrders,
+  getAllOrders,
   getSingleOrder,
 };
