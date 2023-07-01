@@ -40,7 +40,7 @@ const adminLogin = async (payload: ILogin): Promise<ILoginResponse> => {
 
   // create access token
   const accessToken = jwtHelper.createToken(
-    { _id: isAdminExist._id, role: ````.role },
+    { _id: isAdminExist._id, role: isAdminExist.role },
     config.jwt.secret as Secret,
     {
       expiresIn: config.jwt.access_expires_in,

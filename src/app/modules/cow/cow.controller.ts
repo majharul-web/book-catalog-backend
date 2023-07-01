@@ -47,6 +47,7 @@ const getSingleCow = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 const deleteSingleCow = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await CowService.deleteSingleCow(id);
