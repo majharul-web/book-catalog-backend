@@ -19,7 +19,7 @@ app.use('/api/v1/', routes);
 
 // Home route
 app.get('/', async (req: Request, res: Response) => {
-  res.send('Welcome to Digital Cow Hut');
+  res.send('Welcome to Digital Cow Hut Auth');
 });
 
 // Error handler

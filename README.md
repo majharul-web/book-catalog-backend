@@ -1,4 +1,4 @@
-# Digital Cow Hut Backend
+# Digital Cow Hut Auth Backend
 
 <hr>
 
@@ -12,7 +12,7 @@ The main focus of this Project is to implement error handling, CRUD operations, 
 - Used Express.js as the web framework.
 - Used Mongoose as the Object Data Modeling (ODM) and validation library for MongoDB.
 
-### Live Link: https://digital-cow-hut-seven.vercel.app/
+### Live Link: https://digital-cow-hut-admin.vercel.app/
 
 ### Application Routes:
 
