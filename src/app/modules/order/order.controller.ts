@@ -19,21 +19,35 @@ const createOrder = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 const getOrders = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, orderFilterableFields);
   const paginationOptions = pick(req.query, paginationField);
-  const result = await OrderService.getAllCows(filters, paginationOptions);
+  const result = await OrderService.getAllOrders(filters, paginationOptions);
 
   sendResponse<IOrder[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Cow retrieved successfully !',
+    message: 'Order retrieved successfully !',
     meta: result.meta,
     data: result.data,
+  });
+});
+
+const getSingleOrder = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await OrderService.getSingleOrder(id);
+
+  sendResponse<IOrder>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'cow retrieved successfully!',
+    data: result,
   });
 });
 
 export const OrderController = {
   createOrder,
   getOrders,
+  getSingleOrder,
 };

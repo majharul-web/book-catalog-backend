@@ -262,8 +262,16 @@ const getAllCows = async (
   };
 };
 
+const getSingleOrder = async (id: string): Promise<IOrder | null> => {
+  const result = await Order.findOne({ _id: id })
+    .populate('cow')
+    .populate('buyer');
+  return result;
+};
+
 export const OrderService = {
   createOrder,
   getAllCows,
+  getSingleOrder,
   createOrderOld,
 };
