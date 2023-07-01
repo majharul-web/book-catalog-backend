@@ -5,6 +5,7 @@ import httpStatus from 'http-status';
 import config from '../../config';
 import { Secret } from 'jsonwebtoken';
 import { Order } from '../modules/order/order.model';
+import { ICow } from '../modules/cow/cow.interface';
 
 const checkOrderAuthorization = async (
   req: Request,
@@ -26,10 +27,41 @@ const checkOrderAuthorization = async (
     );
 
     const { role, _id } = verifiedUser;
+    if (role === 'admin') {
+      next();
+    } else if (role === 'seller') {
+      if (orderId) {
+        const order = await Order.findOne({ _id: orderId })
+          .populate({
+            path: 'cow',
+            match: { seller: _id },
+          })
+          .populate('buyer')
+          .exec();
 
-    if (role === 'seller') {
-      res.send('You are a seller');
-      // next();
+        if (order && order.cow && (order.cow as ICow).seller._id == _id) {
+          // Seller is authorized, proceed to the next middleware or route handler
+          next();
+        } else {
+          // Seller is not authorized to perform the operation
+          throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access');
+        }
+      } else {
+        // const orders = await Order.aggregate([
+        //   {
+        //     $match: {
+        //       'cow.seller._id': _id,
+        //     },
+        //   },
+        // ]);
+
+        // res.json({
+        //   order: orders,
+        //   status: 200,
+        // });
+
+        next();
+      }
     } else if (role === 'buyer') {
       if (orderId) {
         const order = await Order.findOne({ _id: orderId, buyer: _id });
