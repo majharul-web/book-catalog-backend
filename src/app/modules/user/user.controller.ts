@@ -7,10 +7,6 @@ import { UserService } from './user.service';
 import pick from '../../../shared/pick';
 import { paginationField } from '../../../constants/paginations';
 import { userFilterableFields } from './user.constant';
-import ApiError from '../../../errors/ApiError';
-import { jwtHelper } from '../../../helpers/jwtHelper';
-import { Secret } from 'jsonwebtoken';
-import config from '../../../config';
 
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, userFilterableFields);
@@ -65,19 +61,9 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
 
 // profile section
 const getMyProfile = catchAsync(async (req: Request, res: Response) => {
-  const token = req.headers.authorization;
-  if (!token) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
-  }
-  // verify token
+  const user = req.user;
 
-  // eslint-disable-next-line no-unused-vars
-  const { role, _id } = jwtHelper.verifyToken(
-    token,
-    config.jwt.secret as Secret
-  );
-
-  const result = await UserService.getSingleUser(_id);
+  const result = await UserService.getMyProfile(user);
 
   sendResponse<IUser>(res, {
     statusCode: httpStatus.OK,
@@ -89,19 +75,9 @@ const getMyProfile = catchAsync(async (req: Request, res: Response) => {
 
 const updateProfile = catchAsync(async (req: Request, res: Response) => {
   const userData = req.body;
-  const token = req.headers.authorization;
-  if (!token) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
-  }
-  // verify token
+  const user = req.user;
 
-  // eslint-disable-next-line no-unused-vars
-  const { role, _id } = jwtHelper.verifyToken(
-    token,
-    config.jwt.secret as Secret
-  );
-
-  const result = await UserService.updateProfile(_id, userData);
+  const result = await UserService.updateProfile(user, userData);
 
   sendResponse<IUser>(res, {
     statusCode: httpStatus.OK,

@@ -9,6 +9,7 @@ import { paginationHelper } from '../../../helpers/paginationHelper';
 import { SortOrder } from 'mongoose';
 import config from '../../../config';
 import bcrypt from 'bcrypt';
+import { JwtPayload } from 'jsonwebtoken';
 
 const getAllUsers = async (
   filters: IUserFilters,
@@ -102,11 +103,17 @@ const updateUser = async (
   return result;
 };
 
+const getMyProfile = async (user: JwtPayload | null): Promise<IUser | null> => {
+  const result = await User.findOne({ _id: user?._id });
+  console.log('user', result);
+  return result;
+};
+
 const updateProfile = async (
-  id: string,
+  user: JwtPayload | null,
   payload: Partial<IUser>
 ): Promise<IUser | null> => {
-  const isExist = await User.findOne({ _id: id });
+  const isExist = await User.findOne({ _id: user?._id });
 
   if (!isExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found !');
@@ -131,9 +138,13 @@ const updateProfile = async (
     });
   }
 
-  const result = await User.findOneAndUpdate({ _id: id }, updatedUserData, {
-    new: true,
-  });
+  const result = await User.findOneAndUpdate(
+    { _id: user?._id },
+    updatedUserData,
+    {
+      new: true,
+    }
+  );
   return result;
 };
 
@@ -143,4 +154,5 @@ export const UserService = {
   updateUser,
   getAllUsers,
   updateProfile,
+  getMyProfile,
 };
