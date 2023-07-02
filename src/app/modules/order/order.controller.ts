@@ -21,9 +21,15 @@ const createOrder = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllOrders = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+
   const filters = pick(req.query, orderFilterableFields);
   const paginationOptions = pick(req.query, paginationField);
-  const result = await OrderService.getAllOrders(filters, paginationOptions);
+  const result = await OrderService.getAllOrders(
+    user,
+    filters,
+    paginationOptions
+  );
 
   sendResponse<IOrder[]>(res, {
     statusCode: httpStatus.OK,

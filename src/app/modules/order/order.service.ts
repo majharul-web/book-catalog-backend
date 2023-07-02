@@ -10,6 +10,7 @@ import ApiError from '../../../errors/ApiError';
 import httpStatus from 'http-status';
 import { Cow } from '../cow/cow.model';
 import { User } from '../user/user.model';
+import { JwtPayload } from 'jsonwebtoken';
 
 const createOrderOld = async (orderData: IOrder): Promise<IOrder | null> => {
   const { cow, buyer } = orderData;
@@ -207,6 +208,7 @@ const createOrder = async (orderData: IOrder): Promise<IOrder | null> => {
 };
 
 const getAllOrders = async (
+  user: JwtPayload | null,
   filters: IOrderFilters,
   paginationOptions: IPaginationOptions
 ): Promise<IGenericResponse<IOrder[]>> => {
@@ -215,6 +217,16 @@ const getAllOrders = async (
     paginationHelper.calculatePagination(paginationOptions);
 
   const andConditions = [];
+
+  if (user?.role === 'buyer') {
+    andConditions.push({
+      $and: [
+        {
+          buyer: user._id,
+        },
+      ],
+    });
+  }
 
   if (searchTerm) {
     andConditions.push({

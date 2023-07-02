@@ -27,6 +27,7 @@ const checkOrderAuthorization = async (
     );
 
     const { role, _id } = verifiedUser;
+
     if (role === 'admin') {
       next();
     } else if (role === 'seller') {
@@ -40,10 +41,8 @@ const checkOrderAuthorization = async (
           .exec();
 
         if (order && order.cow && (order.cow as ICow).seller._id == _id) {
-          // Seller is authorized, proceed to the next middleware or route handler
           next();
         } else {
-          // Seller is not authorized to perform the operation
           throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access');
         }
       } else {
@@ -65,22 +64,20 @@ const checkOrderAuthorization = async (
     } else if (role === 'buyer') {
       if (orderId) {
         const order = await Order.findOne({ _id: orderId, buyer: _id });
-
         if (order && order.buyer._id && order.buyer._id == _id) {
-          // Seller is authorized, proceed to the next middleware or route handler
           next();
         } else {
-          // Seller is not authorized to perform the operation
           throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access');
         }
       } else {
         const orders = await Order.find({ buyer: _id });
-
-        if (orders && orders[0].buyer._id && orders[0].buyer._id == _id) {
-          // Seller is authorized, proceed to the next middleware or route handler
+        if (
+          orders.length &&
+          orders[0].buyer._id &&
+          orders[0].buyer._id == _id
+        ) {
           next();
         } else {
-          // Seller is not authorized to perform the operation
           throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access');
         }
       }
