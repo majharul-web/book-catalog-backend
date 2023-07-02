@@ -6,6 +6,7 @@ import config from '../../config';
 import { Secret } from 'jsonwebtoken';
 import { Order } from '../modules/order/order.model';
 import { ICow } from '../modules/cow/cow.interface';
+import { ObjectId } from 'mongodb';
 
 const checkOrderAuthorization = async (
   req: Request,
@@ -46,20 +47,58 @@ const checkOrderAuthorization = async (
           throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access');
         }
       } else {
-        // const orders = await Order.aggregate([
-        //   {
-        //     $match: {
-        //       'cow.seller._id': _id,
-        //     },
-        //   },
-        // ]);
+        const orders = await Order.aggregate([
+          {
+            $lookup: {
+              from: 'cows', // Assuming the collection name for cows is 'cows'
+              localField: 'cow',
+              foreignField: '_id',
+              as: 'cow',
+            },
+          },
+          {
+            $unwind: '$cow',
+          },
+          {
+            $lookup: {
+              from: 'users', // Assuming the collection name for users is 'users'
+              localField: 'cow.seller',
+              foreignField: '_id',
+              as: 'cow.seller',
+            },
+          },
+          {
+            $unwind: '$cow.seller',
+          },
+          {
+            $match: {
+              $and: [
+                { 'cow.seller._id': new ObjectId(_id) },
+                { buyer: { $exists: true } },
+              ],
+            },
+          },
+          {
+            $lookup: {
+              from: 'users', // Assuming the collection name for users is 'users'
+              localField: 'buyer',
+              foreignField: '_id',
+              as: 'buyer',
+            },
+          },
+          {
+            $unwind: '$buyer',
+          },
+        ]);
 
-        // res.json({
-        //   order: orders,
-        //   status: 200,
-        // });
+        // Note: Make sure to import the ObjectId from the MongoDB driver
 
-        next();
+        res.send(orders);
+        if (orders.length && orders[0].cow) {
+          next();
+        } else {
+          throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access');
+        }
       }
     } else if (role === 'buyer') {
       if (orderId) {

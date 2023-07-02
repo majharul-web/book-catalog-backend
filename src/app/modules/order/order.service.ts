@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import mongoose, { SortOrder } from 'mongoose';
 import { IOrder, IOrderFilters } from './order.interface';
 import { Order } from './order.model';
@@ -223,6 +224,21 @@ const getAllOrders = async (
       $and: [
         {
           buyer: user._id,
+        },
+      ],
+    });
+  }
+
+  if (user?.role === 'seller') {
+    andConditions.push({
+      $and: [
+        {
+          $match: {
+            $and: [
+              { 'cow.seller._id': new ObjectId(user?._id) },
+              { buyer: { $exists: true } },
+            ],
+          },
         },
       ],
     });
