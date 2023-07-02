@@ -16,33 +16,52 @@ The main focus of this Project is to implement error handling, CRUD operations, 
 
 ### Application Routes:
 
-#### User
+## Main part
 
-- api/v1/auth/signup (POST)
-- api/v1/users (GET)
-- api/v1/users/648dc7df49be1ec53f9dc4d2 (Single GET)
-- api/v1/users/648dc7df49be1ec53f9dc4d2 (PATCH)
-- api/v1/users/648dc7df49be1ec53f9dc4d2 (DELETE)
+### Auth (User)
+
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/auth/login (POST)
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/auth/signup (POST)
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/auth/refresh-token (POST)
+
+### Auth (Admin)
+
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/admins/create-admin (POST)
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/admins/login (POST)
+
+### User
+
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/users (GET) Include an id that is saved in your database
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/users/6177a5b87d32123f08d2f5d4 (Single GET) Include an id that is saved in your database
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/users/6177a5b87d32123f08d2f5d4 (PATCH) Include an id that is saved in your database
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/users/6177a5b87d32123f08d2f5d4 (DELETE) Include an id that is saved in your database
 
 #### Cows
 
-- api/v1/cows (POST)
-- api/v1/cows (GET)
-- api/v1/cows/648d3f6e593570f77f75cc70 (Single GET)
-- api/v1/cows/648d3f6e593570f77f75cc70 (PATCH)
-- api/v1/cows/648d3f6e593570f77f75cc70 (DELETE)
-
-### Pagination and Filtering routes of Cows
-
-- api/v1/cows?page=1&limit=10
-- api/v1/cows?sortBy=price&sortOrder=asc
-- api/v1/cows?minPrice=20000&maxPrice=70000
-- api/v1/cows?location=Chattogram
-- api/v1/cows?searchTerm=Cha
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/cows (POST)
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/cows (GET)
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/cows/648d3f6e593570f77f75cc70 (Single GET) Include an id that is saved in your database
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/cows/648d3f6e593570f77f75cc70 (PATCH) Include an id that is saved in your database
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/cows/648d3f6e593570f77f75cc70 (DELETE) Include an id that is saved in your database
 
 #### Orders
 
-- api/v1/orders (POST)
-- api/v1/orders (GET)
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/orders (POST)
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/orders (GET)
+
+## Bonus Part
+
+#### Admin
+
+-Route: https://digital-cow-hut-admin.vercel.app/api/v1/admins/create-admin (POST)
+
+#### My Profile
+
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/users/my-profile (GET)
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/users/my-profile (PATCH)
+
+#### Order:
+
+- Route: https://digital-cow-hut-admin.vercel.app/api/v1/orders/648edd1eab8ecab74a7dd8c3 (GET)
 
 # Thank you
