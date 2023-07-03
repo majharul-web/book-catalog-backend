@@ -44,7 +44,7 @@ const checkOrderAuthorization = async (
         if (order && order.cow && (order.cow as ICow).seller._id == _id) {
           next();
         } else {
-          throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access');
+          throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden');
         }
       } else {
         const orders = await Order.aggregate([
@@ -97,7 +97,7 @@ const checkOrderAuthorization = async (
         if (orders.length && orders[0].cow) {
           next();
         } else {
-          throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access');
+          throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden');
         }
       }
     } else if (role === 'buyer') {
@@ -106,7 +106,7 @@ const checkOrderAuthorization = async (
         if (order && order.buyer._id && order.buyer._id == _id) {
           next();
         } else {
-          throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access');
+          throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden');
         }
       } else {
         const orders = await Order.find({ buyer: _id });
@@ -117,7 +117,7 @@ const checkOrderAuthorization = async (
         ) {
           next();
         } else {
-          throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access');
+          throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden');
         }
       }
     }

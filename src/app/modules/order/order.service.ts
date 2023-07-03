@@ -109,7 +109,7 @@ const createOrder = async (orderData: IOrder): Promise<IOrder | null> => {
   if (buyerAccount.role !== 'buyer') {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
-      'You arr not a buyer ,Only buyers can order cow .'
+      'You are not a buyer ,Only buyers can order cow .'
     );
   }
 

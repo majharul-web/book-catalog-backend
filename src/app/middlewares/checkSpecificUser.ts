@@ -18,24 +18,24 @@ const checkSpecificUser = async (
       throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
     }
 
-    const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken) {
-      throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
-    }
+    // const refreshToken = req.cookies.refreshToken;
+    // if (!refreshToken) {
+    //   throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+    // }
 
-    const verifiedUser = jwtHelper.verifyToken(
-      refreshToken,
-      config.jwt.refresh_secret as Secret
-    );
+    // const verifiedUser = jwtHelper.verifyToken(
+    //   refreshToken,
+    //   config.jwt.refresh_secret as Secret
+    // );
 
     const { role, _id } = jwtHelper.verifyToken(
       token,
       config.jwt.secret as Secret
     );
 
-    if (_id !== verifiedUser._id) {
-      throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
-    }
+    // if (_id !== verifiedUser._id) {
+    //   throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+    // }
 
     let user;
     if (role === 'admin') {
@@ -51,7 +51,7 @@ const checkSpecificUser = async (
       next();
     } else {
       // Seller is not authorized to perform the operation
-      throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access');
+      throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden');
     }
   } catch (error) {
     next(error);

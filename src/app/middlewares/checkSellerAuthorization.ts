@@ -31,7 +31,7 @@ const checkSellerAuthorization = async (
       next();
     } else {
       // Seller is not authorized to perform the operation
-      throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access');
+      throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden');
     }
   } catch (error) {
     next(error);
