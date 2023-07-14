@@ -17,6 +17,7 @@ const userSchema = new Schema<IUser>(
     password: {
       type: String,
       required: true,
+      minlength: 8,
       select: 0,
     },
     name: {
@@ -41,14 +42,6 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
     },
-    budget: {
-      type: Number,
-      required: true,
-    },
-    income: {
-      type: Number,
-      default: 0,
-    },
   },
   {
     timestamps: true,
@@ -71,6 +64,7 @@ userSchema.statics.isUserExistByPhone = async function (
     }
   );
 };
+
 userSchema.statics.isUserExistById = async function (
   _id: string
 ): Promise<Pick<IUser, 'phoneNumber' | '_id' | 'password' | 'role'> | null> {

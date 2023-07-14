@@ -13,9 +13,8 @@ export type IUser = {
   name: UserName; //embedded object
   phoneNumber: string;
   address: string;
-  budget: number;
-  income: number;
 };
+
 export type UserModel = {
   isUserExistByPhone: (
     phoneNumber: string
@@ -28,10 +27,3 @@ export type UserModel = {
     savePassword: string
   ) => Promise<boolean>;
 } & Model<IUser>;
-
-export type IUserFilters = {
-  searchTerm?: string;
-  phoneNumber?: string;
-  address?: string;
-  role?: string;
-};

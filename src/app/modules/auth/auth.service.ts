@@ -12,6 +12,10 @@ import {
 } from '../../../interfaces/auth';
 
 const signUp = async (user: IUser): Promise<Partial<IUser> | null> => {
+  if (user) {
+    user.role = 'user';
+  }
+
   const result = await User.create(user);
   if (result) {
     // eslint-disable-next-line no-unused-vars
