@@ -28,9 +28,9 @@ const userLogin = async (payload: ILogin): Promise<ILoginResponse> => {
   const isUserExist = await User.isUserExistByPhone(phoneNumber);
 
   // eslint-disable-next-line no-unused-vars
-  const { password: pp, ...dataWithoutPassword } = isUserExist.toJSON();
+  // const { password: pp, ...dataWithoutPassword } = isUserExist.toJSON();
 
-  console.log('user', dataWithoutPassword);
+  console.log('user', isUserExist);
 
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
@@ -43,6 +43,8 @@ const userLogin = async (payload: ILogin): Promise<ILoginResponse> => {
   ) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Password not match');
   }
+
+  const user = await User.findOne({ phoneNumber: phoneNumber });
 
   // create access token
   const accessToken = jwtHelper.createToken(
@@ -62,7 +64,7 @@ const userLogin = async (payload: ILogin): Promise<ILoginResponse> => {
   );
   return {
     accessToken,
-    user: dataWithoutPassword,
+    user: user,
     refreshToken,
   };
 };
