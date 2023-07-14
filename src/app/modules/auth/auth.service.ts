@@ -5,11 +5,7 @@ import config from '../../../config';
 import { jwtHelper } from '../../../helpers/jwtHelper';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
-import {
-  ILogin,
-  ILoginResponse,
-  IRefreshTokenResponse,
-} from '../../../interfaces/auth';
+import { ILogin, ILoginResponse } from '../../../interfaces/auth';
 
 const signUp = async (user: IUser): Promise<Partial<IUser> | null> => {
   if (user) {
@@ -30,6 +26,11 @@ const userLogin = async (payload: ILogin): Promise<ILoginResponse> => {
 
   // check User is exist
   const isUserExist = await User.isUserExistByPhone(phoneNumber);
+
+  // eslint-disable-next-line no-unused-vars
+  const { password: pp, ...dataWithoutPassword } = isUserExist.toJSON();
+
+  console.log('user', dataWithoutPassword);
 
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
@@ -61,44 +62,12 @@ const userLogin = async (payload: ILogin): Promise<ILoginResponse> => {
   );
   return {
     accessToken,
+    user: dataWithoutPassword,
     refreshToken,
-  };
-};
-
-const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
-  let verifiedToken;
-  try {
-    verifiedToken = jwtHelper.verifyToken(
-      token,
-      config.jwt.refresh_secret as Secret
-    );
-  } catch (error) {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Invalid refresh token');
-  }
-
-  const { _id } = verifiedToken;
-
-  const isUserExist = await User.isUserExistById(_id);
-  if (!isUserExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  }
-
-  // create refresh token
-  const newAccessToken = jwtHelper.createToken(
-    { _id: isUserExist._id, role: isUserExist.role },
-    config.jwt.secret as Secret,
-    {
-      expiresIn: config.jwt.access_expires_in,
-    }
-  );
-
-  return {
-    accessToken: newAccessToken,
   };
 };
 
 export const AuthService = {
   signUp,
   userLogin,
-  refreshToken,
 };

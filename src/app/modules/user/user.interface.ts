@@ -16,9 +16,11 @@ export type IUser = {
 };
 
 export type UserModel = {
-  isUserExistByPhone: (
-    phoneNumber: string
-  ) => Promise<Pick<IUser, 'phoneNumber' | '_id' | 'password' | 'role'>>;
+  isUserExistByPhone: (phoneNumber: string) => Promise<
+    Pick<IUser, 'phoneNumber' | '_id' | 'password' | 'role'>
+  > & {
+    toJSON: () => any;
+  };
   isUserExistById: (
     _id: string
   ) => Promise<Pick<IUser, 'phoneNumber' | '_id' | 'password' | 'role'>>;

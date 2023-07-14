@@ -1,3 +1,5 @@
+import { IUser } from '../app/modules/user/user.interface';
+
 export type ILogin = {
   phoneNumber: string;
   password: string;
@@ -5,6 +7,7 @@ export type ILogin = {
 
 export type ILoginResponse = {
   accessToken: string;
+  user: Partial<IUser | null>;
   refreshToken?: string;
 };
 
