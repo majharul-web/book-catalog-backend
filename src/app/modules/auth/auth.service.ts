@@ -22,10 +22,10 @@ const signUp = async (user: IUser): Promise<Partial<IUser> | null> => {
 };
 
 const userLogin = async (payload: ILogin): Promise<ILoginResponse> => {
-  const { phoneNumber, password } = payload;
+  const { email, password } = payload;
 
   // check User is exist
-  const isUserExist = await User.isUserExistByPhone(phoneNumber);
+  const isUserExist = await User.isUserExistByEmail(email);
 
   // eslint-disable-next-line no-unused-vars
   // const { password: pp, ...dataWithoutPassword } = isUserExist.toJSON();
@@ -44,7 +44,7 @@ const userLogin = async (payload: ILogin): Promise<ILoginResponse> => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Password not match');
   }
 
-  const user = await User.findOne({ phoneNumber: phoneNumber });
+  const user = await User.findOne({ email: email });
 
   // create access token
   const accessToken = jwtHelper.createToken(

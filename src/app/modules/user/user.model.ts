@@ -35,6 +35,10 @@ const userSchema = new Schema<IUser>(
     },
     phoneNumber: {
       type: String,
+      unique: true,
+    },
+    email: {
+      type: String,
       required: true,
       unique: true,
     },
@@ -65,13 +69,15 @@ userSchema.statics.isUserExistByPhone = async function (
   );
 };
 
-userSchema.statics.isUserExistById = async function (
-  _id: string
-): Promise<Pick<IUser, 'phoneNumber' | '_id' | 'password' | 'role'> | null> {
+userSchema.statics.isUserExistByEmail = async function (
+  email: string
+): Promise<Pick<IUser, 'email' | '_id' | 'password' | 'role'> | null> {
+  console.log('email', email);
   return await User.findOne(
-    { _id: _id },
+    { email: email },
     {
-      phoneNumber: 1,
+      email: 1,
+      _id: 1,
       password: 1,
       role: 1,
     }
@@ -88,10 +94,10 @@ userSchema.statics.isPasswordMatched = async function (
 
 userSchema.pre('save', async function (next) {
   const isExist = await User.findOne({
-    phoneNumber: this.phoneNumber,
+    email: this.email,
   });
   if (isExist) {
-    throw new ApiError(httpStatus.CONFLICT, 'Phone number already exist');
+    throw new ApiError(httpStatus.CONFLICT, 'Email number already exist');
   }
   next();
 });

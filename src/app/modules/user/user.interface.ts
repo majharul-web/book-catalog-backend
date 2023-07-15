@@ -11,7 +11,8 @@ export type IUser = {
   role: string;
   password: string;
   name: UserName; //embedded object
-  phoneNumber: string;
+  email: string;
+  phoneNumber?: string;
   address: string;
 };
 
@@ -19,9 +20,9 @@ export type UserModel = {
   isUserExistByPhone: (
     phoneNumber: string
   ) => Promise<Pick<IUser, 'phoneNumber' | '_id' | 'password' | 'role'>>;
-  isUserExistById: (
-    _id: string
-  ) => Promise<Pick<IUser, 'phoneNumber' | '_id' | 'password' | 'role'>>;
+  isUserExistByEmail: (
+    email: string
+  ) => Promise<Pick<IUser, 'email' | '_id' | 'password' | 'role'>>;
   isPasswordMatched: (
     givenPassword: string,
     savePassword: string

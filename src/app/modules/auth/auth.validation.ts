@@ -7,13 +7,11 @@ const userLoginZodSchema = z.object({
       .refine(value => value.length >= 8, {
         message: 'Password must be at least 8 characters long',
       }),
-    phoneNumber: z
+    email: z
       .string({
-        required_error: 'Phone number is required',
+        required_error: 'Email is required',
       })
-      .refine(value => /^(?:\+?88)?01[13-9]\d{8}$/.test(value), {
-        message: 'Invalid Bangladeshi phone number',
-      }),
+      .email({ message: 'Invalid email address' }),
   }),
 });
 

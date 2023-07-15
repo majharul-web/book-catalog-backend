@@ -1,7 +1,7 @@
 import { IUser } from '../app/modules/user/user.interface';
 
 export type ILogin = {
-  phoneNumber: string;
+  email: string;
   password: string;
 };
 
