@@ -9,6 +9,11 @@ const WishlistSchema = new Schema<IWishlist>(
       required: true,
       unique: true,
     },
+    user: {
+      type: Schema.Types.ObjectId, // User --> _id
+      ref: 'User',
+      required: true,
+    },
   },
 
   {

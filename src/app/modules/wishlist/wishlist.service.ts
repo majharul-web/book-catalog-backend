@@ -7,22 +7,29 @@ import { Wishlist } from './wishlist.model';
 import ApiError from '../../../errors/ApiError';
 import httpStatus from 'http-status';
 import { Book } from '../book/book.model';
+import { User } from '../user/user.model';
 
-const addToWishlist = async (payload: string): Promise<IWishlist | null> => {
-  const isExistBook = await Book.findOne({ _id: payload });
-
-  console.log('isExist', isExistBook);
+const addToWishlist = async (
+  bookId: string,
+  userId: string
+): Promise<IWishlist | null> => {
+  const isExistBook = await Book.findOne({ _id: bookId });
+  const isExistUser = await User.findOne({ _id: userId });
 
   if (!isExistBook) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Book not found!');
   }
+  if (!isExistUser) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found!');
+  }
 
-  const result = await Wishlist.create({ book: payload });
+  const result = await Wishlist.create({ book: bookId, user: userId });
   return result;
 };
 
 const getAllWishlists = async (
-  paginationOptions: IPaginationOptions
+  paginationOptions: IPaginationOptions,
+  userId: string
 ): Promise<IGenericResponse<IWishlist[]>> => {
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(paginationOptions);
@@ -33,7 +40,9 @@ const getAllWishlists = async (
     sortConditions[sortBy] = sortOrder;
   }
 
-  const result = await Wishlist.find({})
+  const result = await Wishlist.find({
+    user: userId,
+  })
     .populate('book')
     .sort(sortConditions)
     .skip(skip)

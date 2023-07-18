@@ -8,8 +8,8 @@ import pick from '../../../shared/pick';
 import { paginationField } from '../../../constants/paginations';
 
 const addToWishlist = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.body;
-  const result = await WishlistService.addToWishlist(id);
+  const { bookId, userId } = req.body;
+  const result = await WishlistService.addToWishlist(bookId, userId);
 
   sendResponse<IWishlist>(res, {
     statusCode: httpStatus.OK,
@@ -20,9 +20,13 @@ const addToWishlist = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllWishlists = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.body;
   const paginationOptions = pick(req.query, paginationField);
 
-  const result = await WishlistService.getAllWishlists(paginationOptions);
+  const result = await WishlistService.getAllWishlists(
+    paginationOptions,
+    userId
+  );
 
   sendResponse<IWishlist[]>(res, {
     statusCode: httpStatus.OK,
