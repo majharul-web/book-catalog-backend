@@ -6,6 +6,6 @@ const router = express.Router();
 router.post('/add', ReadinglistController.addToReadinglist);
 router.patch('/:id', ReadinglistController.updateReadinglist);
 router.delete('/:id', ReadinglistController.deleteSingleReadinglist);
-router.get('/', ReadinglistController.getAllReadinglists);
+router.get('/:id', ReadinglistController.getAllReadinglists);
 
 export const readingListRoutes = router;

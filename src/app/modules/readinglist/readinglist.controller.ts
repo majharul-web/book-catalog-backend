@@ -20,12 +20,12 @@ const addToReadinglist = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllReadinglists = catchAsync(async (req: Request, res: Response) => {
-  const { userId } = req.body;
+  const { id } = req.params;
   const paginationOptions = pick(req.query, paginationField);
 
   const result = await ReadinglistService.getAllReadinglists(
     paginationOptions,
-    userId
+    id
   );
 
   sendResponse<IReadinglist[]>(res, {

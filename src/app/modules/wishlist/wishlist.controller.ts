@@ -20,13 +20,10 @@ const addToWishlist = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllWishlists = catchAsync(async (req: Request, res: Response) => {
-  const { userId } = req.body;
+  const { id } = req.params;
   const paginationOptions = pick(req.query, paginationField);
 
-  const result = await WishlistService.getAllWishlists(
-    paginationOptions,
-    userId
-  );
+  const result = await WishlistService.getAllWishlists(paginationOptions, id);
 
   sendResponse<IWishlist[]>(res, {
     statusCode: httpStatus.OK,
