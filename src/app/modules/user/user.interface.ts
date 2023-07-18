@@ -5,7 +5,7 @@ export type IUser = {
   _id?: string;
   role: string;
   password: string;
-  name: string; //embedded object
+  name: string;
   email: string;
   address: string;
 };

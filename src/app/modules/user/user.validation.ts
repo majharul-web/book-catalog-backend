@@ -14,14 +14,6 @@ const createUserZodSchema = z.object({
       })
       .email({ message: 'Invalid email address' }),
 
-    phoneNumber: z
-      .string({
-        required_error: 'Phone number is required',
-      })
-      .refine(value => /^(?:\+?88)?01[13-9]\d{8}$/.test(value), {
-        message: 'Invalid Bangladeshi phone number',
-      })
-      .optional(),
     address: z.string({
       required_error: 'Address is required',
     }),
