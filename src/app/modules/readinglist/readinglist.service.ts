@@ -7,22 +7,33 @@ import { Readinglist } from './readinglist.model';
 import ApiError from '../../../errors/ApiError';
 import httpStatus from 'http-status';
 import { Book } from '../book/book.model';
+import { User } from '../user/user.model';
 
 const addToReadinglist = async (
-  payload: string
+  bookId: string,
+  userId: string
 ): Promise<IReadinglist | null> => {
-  const isExistBook = await Book.findOne({ _id: payload });
+  const isExistBook = await Book.findOne({ _id: bookId });
+  const isExistUser = await User.findOne({ _id: userId });
+
+  if (!isExistBook) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found!');
+  }
+  if (!isExistUser) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found!');
+  }
 
   if (!isExistBook) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Book not found!');
   }
 
-  const result = await Readinglist.create({ book: payload });
+  const result = await Readinglist.create({ book: bookId, user: userId });
   return result;
 };
 
 const getAllReadinglists = async (
-  paginationOptions: IPaginationOptions
+  paginationOptions: IPaginationOptions,
+  userId: string
 ): Promise<IGenericResponse<IReadinglist[]>> => {
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(paginationOptions);
@@ -33,7 +44,7 @@ const getAllReadinglists = async (
     sortConditions[sortBy] = sortOrder;
   }
 
-  const result = await Readinglist.find({})
+  const result = await Readinglist.find({ user: userId })
     .populate('book')
     .sort(sortConditions)
     .skip(skip)

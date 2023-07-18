@@ -8,8 +8,8 @@ import pick from '../../../shared/pick';
 import { paginationField } from '../../../constants/paginations';
 
 const addToReadinglist = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.body;
-  const result = await ReadinglistService.addToReadinglist(id);
+  const { bookId, userId } = req.body;
+  const result = await ReadinglistService.addToReadinglist(bookId, userId);
 
   sendResponse<IReadinglist>(res, {
     statusCode: httpStatus.OK,
@@ -20,9 +20,13 @@ const addToReadinglist = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllReadinglists = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.body;
   const paginationOptions = pick(req.query, paginationField);
 
-  const result = await ReadinglistService.getAllReadinglists(paginationOptions);
+  const result = await ReadinglistService.getAllReadinglists(
+    paginationOptions,
+    userId
+  );
 
   sendResponse<IReadinglist[]>(res, {
     statusCode: httpStatus.OK,

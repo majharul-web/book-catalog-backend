@@ -10,6 +10,11 @@ const ReadinglistSchema = new Schema<IReadinglist>(
       required: true,
       unique: true,
     },
+    user: {
+      type: Schema.Types.ObjectId, // User --> _id
+      ref: 'User',
+      required: true,
+    },
     status: {
       type: String,
       required: true,
