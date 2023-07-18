@@ -16,7 +16,7 @@
 - Used React.js as the frontend library.
 - Used Bootstrap for css framework.
 
-### Frontend Live Link: hhttps://book-self-me.netlify.app/
+### Frontend Live Link: https://book-self-me.netlify.app/
 
 ### Frontend Code Link: https://github.com/majharul-web/book-catalog-frontend
 
