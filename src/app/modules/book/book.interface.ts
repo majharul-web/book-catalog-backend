@@ -1,4 +1,5 @@
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
+import { IUser } from '../user/user.interface';
 export type IBookReview = {
   rating: string;
   comment: string;
@@ -8,8 +9,9 @@ export type IBook = {
   title: string;
   author: string;
   genre: string;
-  publicationDate: Date;
+  publicationDate: string;
   reviews: IBookReview[];
+  createdBy: Types.ObjectId | IUser;
   image?: string;
   description?: string;
 };

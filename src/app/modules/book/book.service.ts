@@ -51,6 +51,7 @@ const getAllBooks = async (
     andConditions.length > 0 ? { $and: andConditions } : {};
 
   const result = await Book.find(whereConditions)
+    .populate('createdBy')
     .sort(sortConditions)
     .skip(skip)
     .limit(limit);
@@ -68,7 +69,7 @@ const getAllBooks = async (
 };
 
 const getSingleBook = async (id: string): Promise<IBook | null> => {
-  const result = await Book.findOne({ _id: id });
+  const result = await Book.findOne({ _id: id }).populate('createdBy');
   return result;
 };
 
